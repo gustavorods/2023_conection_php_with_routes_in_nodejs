@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP para Node.js</title>
+</head>
+<body>
+    <h1>Envio de Dados</h1>
+
+    <script>
+        async function obterDados() {
+            try {
+                // Faz a requisição ao arquivo PHP
+                const response = await fetch('../data.php'); // URL completa para o PHP
+                const data = await response.json();
+                console.log(data);
+                // Enviar os dados para a rota Node.js
+                await enviarParaNode(data);
+            } catch (error) {
+                console.error('Erro ao obter dados:', error);
+            }
+        }
+
+        async function enviarParaNode(dados) {
+            try {
+                // Enviar os dados para a rota Node.js
+                const response = await fetch('http://localhost:3000/SendEmail', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dados)
+                });
+
+                // Verificar a resposta do servidor Node.js
+                if (response.ok) {
+                    console.log('Dados enviados com sucesso.');
+                } else {
+                    console.error('Falha ao enviar dados.');
+                }
+            } catch (error) {
+                console.error('Erro ao enviar dados para Node.js:', error);
+            }
+        }
+
+        window.onload = obterDados;
+    </script>
+</body>
+</html>
